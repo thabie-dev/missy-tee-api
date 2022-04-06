@@ -20,6 +20,28 @@ genderOptions.addEventListener('click', function(evt){
 	filterData();
 });
 
+function garments(){
+	axios
+	.get(`http://localhost:4017/api/garments`, function(result){
+		console.log(result.data)
+		searchResultsElem.innerHTML = garmentsTemplate({
+			garments : result.data.garments
+		});
+	});
+}
+
+garments()
+
+function priceGarments(){
+	axios
+ 	.get(`http://localhost:4017/api/garments/price/:price`, function(result){
+		console.log(result.data)
+		searchResultsElem.innerHTML = garmentsTemplate({
+			garments : result.data.garments
+		});
+	});
+}
+
 function filterData() {
 	axios
 		.get(`/api/garments?gender=${genderFilter}&season=${seasonFilter}`)
