@@ -37,7 +37,7 @@ addGarmetBtn.addEventListener('click', function(evt) {
 	const fields = fieldManager.getValues();
 
 	axios
-		.post('/api/garments', fields)
+		.post('http://localhost:4017/api/garments', fields)
 		.then(result =>{
 			if (result.data.status == 'error') {
 				showMessage(result.data.message);
@@ -51,6 +51,8 @@ addGarmetBtn.addEventListener('click', function(evt) {
 			}
 		})
 		.catch(err => {
+			console.log("Thabile")
+			console.log(fields)
 			showMessage(err.stack)
 		});
 });
