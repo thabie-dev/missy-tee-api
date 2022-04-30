@@ -9,28 +9,48 @@ const showPriceRangeElem = document.querySelector('.showPriceRange');
 
 const garmentsTemplateText = document.querySelector('.garmentListTemplate');
 const garmentsTemplate = Handlebars.compile(garmentsTemplateText.innerHTML);
+const loginBtn = document.querySelector('.login');
 
 seasonOptions.addEventListener('click', function (evt) {
 	seasonFilter = evt.target.value;
 	filterData();
 });
 
+loginBtn.addEventListener('click', priceGarments)
+
+
+function login() {
+	axios
+		.get(`http://localhost:4017/api/login`)
+		.then(function (result) {
+			console.log(result)
+			const {token}= result.data;
+			localStorage.setItem('token', token)
+		})
+
+		.catch(function (err) {
+			console.log(err)
+		})
+}
+
+login()
 genderOptions.addEventListener('click', function (evt) {
 	genderFilter = evt.target.value;
 	filterData();
 });
 
 function garments() {
+	const token =localStorage.getItem('token')
+	const url=`http://localhost:4017/api/garments/price/:price?token=${token}`
 	axios
-		.get(`http://localhost:4017/api/garments`, function (result) {
+	
+		.get(url, function (result) {
 			console.log(result)
 			searchResultsElem.innerHTML = garmentsTemplate({
 				garments: result.data.garments
 			});
 		});
 }
-
-garments()
 
 function priceGarments() {
 	axios
@@ -61,8 +81,10 @@ function filterData() {
 priceRangeElem.addEventListener('change', function (evt) {
 	const maxPrice = evt.target.value;
 	showPriceRangeElem.innerHTML = maxPrice;
+	const token =localStorage.getItem('token');
+	const url=`http://localhost:4017/api/garments/price/${maxPrice}?token=${token}`;
 	axios
-		.get(`/api/garments/price/${maxPrice}`)
+		.get(url)
 		.then(function (result) {
 			searchResultsElem.innerHTML = garmentsTemplate({
 				garments: result.data.garments

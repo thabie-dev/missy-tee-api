@@ -14,6 +14,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors())
 
 
+
 // API routes to be added here
 // app.get('/api/garments', function(req, res){
 //     // note that this route just send JSON data to the browser
@@ -23,28 +24,21 @@ app.use(cors())
 
 function checkToken(req, res, next) {
 
-    const token =req.params.token
+    const token =req.query.token
     console.log(token)
-    // const token = req.body.token & req.body.token.split(" ")[1];
+  
 
     console.log(req.body.token);
 
-    // if (!req.headers.authorization || !token){
-    // 	res.sendStatus(401);
-    // 	return;
-    // }
-
-    // what do I need to do with the token ?
-
-    // unwrap the decode the token...
+   
     const decoded = jwt.verify(token, 'QueenPresident@Mmabatho');
 
-    // find the username in the token ?
+    
     const { username } = decoded;
 
     console.log(username);
 
-    // check if the username in the token is 'avermeulen'
+    
     if (username && username === 'President') {
         next();
     } else {
@@ -104,7 +98,7 @@ app.get('/api/login', function (req, res) {
 //     return true;
 // });
 
-app.get('/api/garments/price/:price', function (req, res) {
+app.get('/api/garments/price/:price', checkToken, function (req, res) {
     const maxPrice = Number(req.params.price);
     const filteredGarments = garments.filter(garment => {
         // filter only if the maxPrice is bigger than maxPrice
@@ -164,14 +158,14 @@ app.post('/api/garments', (req, res) => {
 
 //});
 
-// function filterData() {
-//     axios.get(`/api/garments?gender=${genderFilter}&season=${seasonFilter}`)
-//         .then(function(result) {
-//             searchResultsElem.innerHTML = garmentsTemplate({
-//                 garments : result.data.garments
-//             })
-//         });
-//     }
+function filterData() {
+    axios.get(`/api/garments?gender=${genderFilter}&season=${seasonFilter}`)
+        .then(function(result) {
+            searchResultsElem.innerHTML = garmentsTemplate({
+                garments : result.data.garments
+            })
+        });
+    }
 
 
 // });
@@ -181,14 +175,4 @@ app.listen(PORT, function () {
     console.log(`App started on port ${PORT}`)
 
 });
-// var privateKey = fs.readFileSync('private.key');
-// jwt.sign({ foo: 'garments' }, privateKey, { algorithm: 'RS256' }, function(err, token) {
-//     console.log(token);
-//   });
 
-
-var token = jwt.sign({ foo: 'garments' }, 'shhhhh');
-console.log(token)
-
-var decoded = jwt.decode(token);
-console.log(decoded)
